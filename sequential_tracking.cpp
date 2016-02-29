@@ -13,22 +13,22 @@ using namespace cv;
 
 int main(int, char**)
 {
-    VideoCapture cap("sherman.mp4"); // open the default camera
-    if(!cap.isOpened())  // check if we succeeded
+    VideoCapture cap("sherman.mp4");
+    if(!cap.isOpened()) 
         return -1;
 
     Mat edges;
-    namedWindow("edges",1);
+    namedWindow("Difference",1);
     for(;;)
     {
-        Mat frame;
-        cap >> frame; // get a new frame from camera
-        cvtColor(frame, edges, CV_BGR2GRAY);
-        GaussianBlur(edges, edges, Size(7,7), 1.5, 1.5);
-        Canny(edges, edges, 0, 30, 3);
-        imshow("edges", edges);
+      Mat frame, frame2, diff;
+        cap >> frame;
+	cap >> frame2;
+        //GaussianBlur(frame, frame, Size(15,15), 3,3);
+	//GaussianBlur(frame2, frame2, Size(15,15), 3, 3);
+	absdiff(frame, frame2, diff);
+        imshow("Difference", diff);
         if(waitKey(30) >= 0) break;
     }
-    // the camera will be deinitialized automatically in VideoCapture destructor
     return 0;
 }
