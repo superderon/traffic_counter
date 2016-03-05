@@ -29,7 +29,7 @@ void locateCoordsOfDetectedObject(Mat thresholdImage, Mat &cameraFeed){//locate 
   else detectedObj = false;
 
   if (detectedObj){//when an object is detected		
-    for (int i = contours.size()-1; i>1; i--)
+    for (int i = contours.size()-1; i>contours.size()-5; i--)
       {
         vector< vector<Point> > largestContourVec;
 	largestContourVec.push_back(contours.at(i));//Find all contours		
@@ -66,23 +66,24 @@ int main(int, char**)
       cap >> frame2;
       cv::cvtColor(frame, grey1, COLOR_BGR2GRAY);//convert to greyscale
       cv::cvtColor(frame2, grey2, COLOR_BGR2GRAY);//convert to greyscale
-      GaussianBlur(grey1, grey1, Size(15,15),3,3);
-      GaussianBlur(grey2, grey2, Size(15,15), 3,3);
+      GaussianBlur(grey1, grey1, Size(9,9),3,3);
+      GaussianBlur(grey2, grey2, Size(9,9),3,3);
       absdiff(grey1, grey2, diff);
-      threshold(diff, thresh, 70, 255, THRESH_BINARY);//(Mat grayScaleImage, Mat outputSave, sensitvityValue, maxVal, typeOutput)
+      threshold(diff, thresh, 20, 15, THRESH_BINARY);//(Mat grayScaleImage, Mat outputSave, sensitvityValue, maxVal, typeOutput)
 
       // Create a structuring element
-       int erosion_size = 4;  
+       int erosion_size = 8;  
        Mat element = getStructuringElement(cv::MORPH_CROSS,
               cv::Size(2 * erosion_size + 1, 2 * erosion_size + 1),
               cv::Point(erosion_size, erosion_size) );
 
-       //dilate(thresh, thresh, element, Point(1,1), 5);//input, output, kernal, anchor, iterations
+       dilate(thresh, thresh, element, Point(-1,-1), 5);//input, output, kernal, anchor, iterations
+       //erode(thresh, thresh, element, Point(-1,-1), 4);//input, output, kernal, anchor, iterations
 
       locateCoordsOfDetectedObject(thresh, frame2);
 
       imshow("Tracking", frame2);
-      // imshow("Difference", diff);
+      //imshow("Difference", diff);
       imshow("Threshold", thresh);
 
       if(waitKey(30) >= 0) break;

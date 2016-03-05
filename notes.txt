@@ -1,0 +1,9 @@
+Started off with a canny
+
+Shaky camera messes up the absdiff implementation. 
+
+Once different threshold values can account for shaky camera
+
+Splits image into a whole lot of contours -Try Gaussian Blur - Add Morphological ops
+
+When dilating, rather use smaller kernal and iterate a few times
