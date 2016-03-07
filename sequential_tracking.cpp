@@ -52,29 +52,28 @@ void locateCoordsOfDetectedObject(Mat thresholdImage, Mat &cameraFeed){//locate 
 
 int main(int, char**)
 {
-  VideoCapture cap("night2.mp4");
+  VideoCapture cap("day1.mp4");
   if(!cap.isOpened()) 
     return -1;
 
-  namedWindow("Tracking");
-  moveWindow("Tracking", 10, 0);
-  namedWindow("Threshold");
-  moveWindow("Threshold", 660, 0);
+  namedWindow("Frame2");
+  moveWindow("Frame2", 10, 0);
+  namedWindow("Frame1");
+  moveWindow("Frame1", 660, 0);
   namedWindow("Difference");
   moveWindow("Difference", 10, 550);
-
-
+  Mat frame, frame2, diff, grey1, grey2, thresh;
+        
   for(;;)
     {
-      Mat frame, frame2, diff, grey1, grey2, thresh;
       cap >> frame;
       cap >> frame2;
       cv::cvtColor(frame, grey1, COLOR_BGR2GRAY);//convert to greyscale
       cv::cvtColor(frame2, grey2, COLOR_BGR2GRAY);//convert to greyscale
-      GaussianBlur(grey1, grey1, Size(15,15),5,5);
-      GaussianBlur(grey2, grey2, Size(15,15),5,5);
+      //GaussianBlur(grey1, grey1, Size(15,15),5,5);
+      //GaussianBlur(grey2, grey2, Size(15,15),5,5);
       absdiff(grey1, grey2, diff);
-      threshold(diff, thresh, 20, 255, THRESH_BINARY);//(Mat grayScaleImage, Mat outputSave, sensitvityValue, maxVal, typeOutput)
+      //threshold(diff, thresh, 20, 255, THRESH_BINARY);//(Mat grayScaleImage, Mat outputSave, sensitvityValue, maxVal, typeOutput)
 
       // Create a structuring element
        int erosion_size = 4;  
@@ -82,16 +81,16 @@ int main(int, char**)
               cv::Size(2 * erosion_size + 1, 2 * erosion_size + 1),
               cv::Point(erosion_size, erosion_size) );
 
-       dilate(thresh, thresh, element, Point(-1,-1), 4);//input, output, kernal, anchor, iterations
+       //dilate(thresh, thresh, element, Point(-1,-1), 4);//input, output, kernal, anchor, iterations
        //erode(thresh, thresh, element, Point(-1,-1), 2);//input, output, kernal, anchor, iterations
        //dilate(thresh, thresh, element, Point(-1,-1), 2);//input, output, kernal, anchor, iterations
 
-      locateCoordsOfDetectedObject(thresh, frame2);
+       //locateCoordsOfDetectedObject(thresh, frame2);
 
      
       imshow("Difference", diff);
-      imshow("Threshold", thresh);
-       imshow("Tracking", frame2);
+      imshow("Frame1", frame);
+       imshow("Frame2", frame2);
 
       if(waitKey(30) >= 0) break;
     }
