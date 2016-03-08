@@ -16,8 +16,7 @@ def main(video):
     new = 0
     old = 0
     count = 0
-    #fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    out = cv2.VideoWriter('output.mp4',2,30, (856,474))
+
     cv2.namedWindow("mask")
     cv2.moveWindow("mask",0,0)
     cv2.namedWindow("foreground")
@@ -28,8 +27,6 @@ def main(video):
         ret, frame = vid.read()
         if not ret:
             break
-
-
         imgray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
         mask = background2.apply(frame,learningRate=.05)
         erode = cv2.erode(mask,kernel,iterations =1)
@@ -41,11 +38,8 @@ def main(video):
         if framecount>150:
             for i in contours:
                 if cv2.contourArea(i) > 2000:
-                    #print cv2.contourArea(i)
                     x,y,w,h = cv2.boundingRect(i)
-
                     if y+h/2>400:
-
                         cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)
                         new = new + y+h/2
 
@@ -62,19 +56,14 @@ def main(video):
             cv2.imshow('mask', mask)
             cv2.imshow('foreground',dilate)
             cv2.imshow('original',frame)
-        out.write(frame)
         #time.sleep(.025)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-        #output.write(frame)
-
+        
     vid.release()
 
     cv2.destroyAllWindows()
-
-
-    out.release()
-
+   
 if __name__ == '__main__':
     
     main(sys.argv[1])
